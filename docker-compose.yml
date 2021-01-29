@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  mysql:
+    image: mysql:5.7.33
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    expose:
+      - "3306"
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d:ro
+  presto:
+    build:
+      context: ./presto
+      args:
+        - MAVEN_OPTS=${MAVEN_OPTS}
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
