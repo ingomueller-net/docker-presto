@@ -7,13 +7,57 @@ services:
     expose:
       - "3306"
     volumes:
-      - ./mysql:/docker-entrypoint-initdb.d:ro
+      - ./runtime/mysql:/docker-entrypoint-initdb.d:ro
+
   presto:
     build:
-      context: ./presto
+      context: ./image
+      args:
+        - MAVEN_OPTS=${MAVEN_OPTS}
+    command: ["/opt/presto/bin/launcher", "run"]
+    depends_on:
+      - mysql
+      - hive
+      - datanode
+      - namenode
+    ports:
+      - "8080:8080"
+
+  namenode:
+    build:
+      context: ./image
+      args:
+        - MAVEN_OPTS=${MAVEN_OPTS}
+    volumes:
+      - ./data/:/data/:ro
+    ports:
+      - "9870:9870"
+      - "8020:8020"
+    command: ["hdfs", "namenode"]
+
+  datanode:
+    build:
+      context: ./image
+      args:
+        - MAVEN_OPTS=${MAVEN_OPTS}
+    depends_on:
+      - namenode
+    ports:
+      - "9864:9864"
+      - "9866:9866"
+      - "9867:9867"
+      - "46759:46759"
+    command: ["hdfs", "datanode"]
+
+  hive:
+    build:
+      context: ./image
       args:
         - MAVEN_OPTS=${MAVEN_OPTS}
     depends_on:
       - mysql
+      - namenode
+      - datanode
     ports:
-      - "8080:8080"
+      - "9083:9083"
+    command: ["/scripts/hive-entrypoint.sh"]
