@@ -1,6 +1,7 @@
 FROM maven:3.6.3-openjdk-8 AS namespace-manager-builder
+ARG PRESTO_VERSION=0.248.1
 ARG MAVEN_OPTS
-RUN git clone --branch 0.246 --depth 1 https://github.com/prestodb/presto.git /presto && \
+RUN git clone --branch $PRESTO_VERSION --depth 1 https://github.com/prestodb/presto.git /presto && \
     cd /presto && \
     mvn clean install -pl presto-function-namespace-managers -am -DskipTests && \
     rm -rf /root/.m2
@@ -8,6 +9,7 @@ RUN git clone --branch 0.246 --depth 1 https://github.com/prestodb/presto.git /p
 FROM openjdk:8u282-jre-buster
 MAINTAINER Ingo Müller <ingo.mueller@inf.ethz.ch>
 
+ARG PRESTO_VERSION=0.248.1
 ENV HADOOP_HOME /opt/hadoop
 ENV HIVE_HOME /opt/hive
 ENV PRESTO_HOME /opt/presto
@@ -40,16 +42,16 @@ RUN \
     # Install Presto
     mkdir $PRESTO_HOME && \
     cd $PRESTO_HOME && \
-    wget --progress=dot:giga https://repo1.maven.org/maven2/com/facebook/presto/presto-server/0.246/presto-server-0.246.tar.gz -O - | \
+    wget --progress=dot:giga https://repo1.maven.org/maven2/com/facebook/presto/presto-server/$PRESTO_VERSION/presto-server-$PRESTO_VERSION.tar.gz -O - | \
          tar -xz --strip-components=1 && \
     # Install Presto CLI
-    wget --progress=dot:giga https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/0.246/presto-cli-0.246-executable.jar -O $PRESTO_HOME/bin/presto-cli && \
+    wget --progress=dot:giga https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/$PRESTO_VERSION/presto-cli-$PRESTO_VERSION-executable.jar -O $PRESTO_HOME/bin/presto-cli && \
     chmod +x $PRESTO_HOME/bin/presto-cli
 
 COPY hadoop/etc /opt/hadoop/etc
 COPY hive/conf /opt/hive/conf
 COPY presto/etc /opt/presto/etc
 COPY scripts /scripts
-COPY --from=namespace-manager-builder /presto/presto-function-namespace-managers/target/presto-function-namespace-managers-0.246/ /opt/presto/plugin/function-namespace-managers
+COPY --from=namespace-manager-builder /presto/presto-function-namespace-managers/target/presto-function-namespace-managers-$PRESTO_VERSION/ /opt/presto/plugin/function-namespace-managers
 
 RUN hdfs namenode -format && rm -rf /opt/hadoop/logs/*
