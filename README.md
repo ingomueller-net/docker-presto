@@ -16,6 +16,14 @@ docker-compose up
 
 This brings up a MySQL server, which takes a bit to start for the first time, and which Presto depends on. If starting the services fails the first time, try interrupting them (with `CTRL+C`) and bringing them up again.
 
+### Building the image locally
+
+Above command uses a pre-built [docker image](https://hub.docker.com/r/ingomuellernet/presto). If you want the image to be build locally, do the following instead:
+
+```bash
+docker-compose --file docker-compose-local.yml up
+```
+
 If you are behind a corporate firewall, you will have to configure Maven (which is used to build part of Presto) as follows before running above command:
 
 ```bash

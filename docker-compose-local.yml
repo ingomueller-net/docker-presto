@@ -10,7 +10,10 @@ services:
       - ./runtime/mysql:/docker-entrypoint-initdb.d:ro
 
   presto:
-    image: ingomuellernet/presto:0.248.1
+    build:
+      context: ./image
+      args:
+        - MAVEN_OPTS=${MAVEN_OPTS}
     command: ["/opt/presto/bin/launcher", "run"]
     depends_on:
       - mysql
@@ -21,7 +24,10 @@ services:
       - "8080:8080"
 
   namenode:
-    image: ingomuellernet/presto:0.248.1
+    build:
+      context: ./image
+      args:
+        - MAVEN_OPTS=${MAVEN_OPTS}
     volumes:
       - ./data/:/data/:ro
     ports:
@@ -30,7 +36,10 @@ services:
     command: ["hdfs", "namenode"]
 
   datanode:
-    image: ingomuellernet/presto:0.248.1
+    build:
+      context: ./image
+      args:
+        - MAVEN_OPTS=${MAVEN_OPTS}
     depends_on:
       - namenode
     ports:
@@ -41,7 +50,10 @@ services:
     command: ["hdfs", "datanode"]
 
   hive:
-    image: ingomuellernet/presto:0.248.1
+    build:
+      context: ./image
+      args:
+        - MAVEN_OPTS=${MAVEN_OPTS}
     depends_on:
       - mysql
       - namenode
