@@ -55,3 +55,5 @@ COPY scripts /scripts
 COPY --from=namespace-manager-builder /presto/presto-function-namespace-managers/target/presto-function-namespace-managers-$PRESTO_VERSION/ /opt/presto/plugin/function-namespace-managers
 
 RUN hdfs namenode -format && rm -rf /opt/hadoop/logs/*
+
+ENTRYPOINT ["/scripts/entrypoint.sh"]

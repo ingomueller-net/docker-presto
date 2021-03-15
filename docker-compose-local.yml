@@ -14,7 +14,6 @@ services:
       context: ./image
       args:
         - MAVEN_OPTS=${MAVEN_OPTS}
-    command: ["/opt/presto/bin/launcher", "run"]
     depends_on:
       - mysql
       - hive
@@ -22,6 +21,7 @@ services:
       - namenode
     ports:
       - "8080:8080"
+    command: ["/opt/presto/bin/launcher", "run"]
 
   namenode:
     build:

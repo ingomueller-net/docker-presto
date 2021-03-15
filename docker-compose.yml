@@ -11,7 +11,6 @@ services:
 
   presto:
     image: ingomuellernet/presto:0.248.1
-    command: ["/opt/presto/bin/launcher", "run"]
     depends_on:
       - mysql
       - hive
@@ -19,6 +18,7 @@ services:
       - namenode
     ports:
       - "8080:8080"
+    command: ["/opt/presto/bin/launcher", "run"]
 
   namenode:
     image: ingomuellernet/presto:0.248.1
