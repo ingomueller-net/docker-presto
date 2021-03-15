@@ -49,9 +49,10 @@ services:
         - MAVEN_OPTS=${MAVEN_OPTS}
     volumes:
       - ./data/:/data/:ro
+    expose:
+      - "8020"
     ports:
       - "9870:9870"
-      - "8020:8020"
     command: ["hdfs", "namenode"]
 
   datanode:

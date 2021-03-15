@@ -40,9 +40,10 @@ services:
     image: ingomuellernet/presto:0.248.1
     volumes:
       - ./data/:/data/:ro
+    expose:
+      - "8020"
     ports:
       - "9870:9870"
-      - "8020:8020"
     command: ["hdfs", "namenode"]
 
   datanode:
