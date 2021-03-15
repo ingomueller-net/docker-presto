@@ -24,7 +24,8 @@ services:
       - ./runtime/presto/run.d:/scripts/run.d:ro
     ports:
       - "8080:8080"
-    command: ["/opt/presto/bin/launcher", "run"]
+    command: ["wait-for-it", "hive:9083", "-t", "60",
+              "--", "/opt/presto/bin/launcher", "run"]
 
   presto-worker:
     build:
@@ -40,7 +41,8 @@ services:
       - "8080"
     ports:
       - "35000-35999:8080"
-    command: ["/opt/presto/bin/launcher", "run"]
+    command: ["wait-for-it", "presto:8080", "-t", "60",
+              "--", "/opt/presto/bin/launcher", "run"]
 
   namenode:
     build:
@@ -68,7 +70,8 @@ services:
       - "9866"
       - "9867"
       - "46759"
-    command: ["hdfs", "datanode"]
+    command: ["wait-for-it", "datanode:8020", "-t", "10",
+              "--", "hdfs", "datanode"]
 
   hive:
     build:
@@ -81,4 +84,5 @@ services:
       - datanode
     ports:
       - "9083:9083"
-    command: ["/scripts/hive-entrypoint.sh"]
+    command: ["wait-for-it", "mysql:3306", "-t", "30",
+              "--", "/scripts/hive-entrypoint.sh"]
