@@ -18,6 +18,7 @@ ENV PATH $PATH:$HADOOP_HOME/bin:$HIVE_HOME/bin:$PRESTO_HOME/bin
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
         python-minimal \
+        rsync \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN \

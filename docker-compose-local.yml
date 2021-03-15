@@ -19,6 +19,9 @@ services:
       - hive
       - datanode
       - namenode
+    volumes:
+      - ./runtime/presto/copy.d:/scripts/copy.d:ro
+      - ./runtime/presto/run.d:/scripts/run.d:ro
     ports:
       - "8080:8080"
     command: ["/opt/presto/bin/launcher", "run"]
