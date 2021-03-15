@@ -23,6 +23,19 @@ services:
       - "8080:8080"
     command: ["/opt/presto/bin/launcher", "run"]
 
+  presto-worker:
+    image: ingomuellernet/presto:0.248.1
+    depends_on:
+      - presto
+    volumes:
+      - ./runtime/presto-worker/copy.d:/scripts/copy.d:ro
+      - ./runtime/presto-worker/run.d:/scripts/run.d:ro
+    expose:
+      - "8080"
+    ports:
+      - "35000-35999:8080"
+    command: ["/opt/presto/bin/launcher", "run"]
+
   namenode:
     image: ingomuellernet/presto:0.248.1
     volumes:
@@ -37,10 +50,11 @@ services:
     depends_on:
       - namenode
     ports:
-      - "9864:9864"
-      - "9866:9866"
-      - "9867:9867"
-      - "46759:46759"
+      - "36000-36999:9864"
+    expose:
+      - "9866"
+      - "9867"
+      - "46759"
     command: ["hdfs", "datanode"]
 
   hive:

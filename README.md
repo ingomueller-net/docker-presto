@@ -2,9 +2,9 @@
 
 This projects aims to make it easy to get started with [Presto](https://prestodb.io/). It is based on Docker and [Docker compose](https://docs.docker.com/compose/). Currently, the following features are supported:
 
-* Single machine set-up
+* Dedicated Presto scheduler node and variable number of worker nodes
 * [Function Namespace Manager](https://prestodb.io/docs/current/admin/function-namespace-managers.html) (for [creating functions](https://prestodb.io/docs/current/sql/create-function.html))
-* [Hive connector](https://prestodb.io/docs/current/connector/hive.html), Hive Metastore, and pseudo-replicated HDFS (i.e., a single data node without replication)
+* [Hive connector](https://prestodb.io/docs/current/connector/hive.html), Hive Metastore, and pseudo-replicated HDFS (i.e., without replication) with variable number of data nodes
 
 ### Starting Presto
 
@@ -15,6 +15,14 @@ docker-compose up
 ```
 
 This brings up a MySQL server, which takes a bit to start for the first time, and which Presto depends on. If starting the services fails the first time, try interrupting them (with `CTRL+C`) and bringing them up again.
+
+### Varying the number of workers and data nodes
+
+To change the number of Presto worker nodes or HDFS data nodes, use the `--scale` flag of docker-compose:
+
+```bash
+docker-compose up --scale datanode=3 --scale presto-worker=3
+```
 
 ### Building the image locally
 
