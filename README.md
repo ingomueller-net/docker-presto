@@ -5,6 +5,7 @@ This projects aims to make it easy to get started with [Presto](https://prestodb
 * Dedicated Presto scheduler node and variable number of worker nodes
 * [Function Namespace Manager](https://prestodb.io/docs/current/admin/function-namespace-managers.html) (for [creating functions](https://prestodb.io/docs/current/sql/create-function.html))
 * [Hive connector](https://prestodb.io/docs/current/connector/hive.html), Hive Metastore, and pseudo-replicated HDFS (i.e., without replication) with variable number of data nodes
+* Reading from S3 without addtitional configuration (if running in EC2 and with a properly configured [instance profile](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html))
 
 ### Starting Presto
 
@@ -14,9 +15,7 @@ The following should be enough to bring up all required services:
 docker-compose up
 ```
 
-This brings up a MySQL server, which takes a bit to start for the first time, and which Presto depends on. If starting the services fails the first time, try interrupting them (with `CTRL+C`) and bringing them up again.
-
-### Varying the number of workers and data nodes
+### Varying the Number of Workers and Data Nodes
 
 To change the number of Presto worker nodes or HDFS data nodes, use the `--scale` flag of docker-compose:
 
@@ -24,7 +23,7 @@ To change the number of Presto worker nodes or HDFS data nodes, use the `--scale
 docker-compose up --scale datanode=3 --scale presto-worker=3
 ```
 
-### Building the image locally
+### Building the Image Locally
 
 Above command uses a pre-built [docker image](https://hub.docker.com/r/ingomuellernet/presto). If you want the image to be build locally, do the following instead:
 
@@ -75,6 +74,8 @@ Upload it to `/test/test.csv` on HDFS as described above. Then run the following
 ```SQL
 CREATE TABLE test (s VARCHAR, i INTEGER) WITH (EXTERNAL_LOCATION = 'hdfs://namenode/test/', FORMAT = 'JSON');
 ```
+
+For external tables from S3, spin up this service in an EC2 instance, set up an [instance profile](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html) for that instance, and use the `s3a://` protocol instead of `hdfs://`.
 
 ### Adminstrating the MySQL Databases
 
