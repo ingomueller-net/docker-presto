@@ -1,5 +1,5 @@
 FROM maven:3.6.3-openjdk-8 AS namespace-manager-builder
-ARG PRESTO_VERSION=0.248.1
+ARG PRESTO_VERSION=0.258
 ARG MAVEN_OPTS
 RUN git clone --branch $PRESTO_VERSION --depth 1 https://github.com/prestodb/presto.git /presto && \
     cd /presto && \
@@ -9,7 +9,7 @@ RUN git clone --branch $PRESTO_VERSION --depth 1 https://github.com/prestodb/pre
 FROM openjdk:8u282-jre-buster
 MAINTAINER Ingo Müller <ingo.mueller@inf.ethz.ch>
 
-ARG PRESTO_VERSION=0.248.1
+ARG PRESTO_VERSION=0.258
 ENV HADOOP_HOME /opt/hadoop
 ENV HIVE_HOME /opt/hive
 ENV PRESTO_HOME /opt/presto
