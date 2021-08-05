@@ -10,7 +10,7 @@ services:
       - ./runtime/mysql:/docker-entrypoint-initdb.d:ro
 
   presto:
-    image: ingomuellernet/presto:0.248.1
+    image: ingomuellernet/presto:0.258
     depends_on:
       - mysql
       - hive
@@ -25,7 +25,7 @@ services:
               "--", "/opt/presto/bin/launcher", "run"]
 
   presto-worker:
-    image: ingomuellernet/presto:0.248.1
+    image: ingomuellernet/presto:0.258
     depends_on:
       - presto
     volumes:
@@ -39,7 +39,7 @@ services:
               "--", "/opt/presto/bin/launcher", "run"]
 
   namenode:
-    image: ingomuellernet/presto:0.248.1
+    image: ingomuellernet/presto:0.258
     volumes:
       - ./data/:/data/:ro
     expose:
@@ -49,7 +49,7 @@ services:
     command: ["hdfs", "namenode"]
 
   datanode:
-    image: ingomuellernet/presto:0.248.1
+    image: ingomuellernet/presto:0.258
     depends_on:
       - namenode
     ports:
@@ -62,7 +62,7 @@ services:
               "--", "hdfs", "datanode"]
 
   hive:
-    image: ingomuellernet/presto:0.248.1
+    image: ingomuellernet/presto:0.258
     depends_on:
       - mysql
       - namenode
